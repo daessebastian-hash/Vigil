@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A Story of Love and Grief told through a Purchase Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&display=swap">
+<style>
+/* Layout: the essay reads down the left; the poem sits beside it as a receipt-paper order log that lights up as the essay points into it. */
+:root{
+  --bg:#ECEEF0;
+  --paper:#FFFFFF;
+  --ink:#1C2024;
+  --ink-2:#4F565E;
+  --muted:#737B83;
+  --rule:#D3D8DC;
+  --accent:#BF245C;          /* nail-polish pink: the color the poem keeps buying */
+  --on-accent:#FFFFFF;
+  --wash:#FBE3EC;
+  --track:#F3C8D7;
+  --bar:#A3ABB3;
+  --shadow:rgba(28,32,36,.08);
+  --display:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --body:"Newsreader","Iowan Old Style",Georgia,"Times New Roman",serif;
+  --ui:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#111316; --paper:#1A1D21; --ink:#E7EAED; --ink-2:#B1B8BF; --muted:#838B93; --rule:#2E333A;
+    --accent:#F0689B; --on-accent:#1A1D21; --wash:#3D2030; --track:#4B2738; --bar:#5B636C; --shadow:rgba(0,0,0,.45);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111316; --paper:#1A1D21; --ink:#E7EAED; --ink-2:#B1B8BF; --muted:#838B93; --rule:#2E333A;
+  --accent:#F0689B; --on-accent:#1A1D21; --wash:#3D2030; --track:#4B2738; --bar:#5B636C; --shadow:rgba(0,0,0,.45);
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.page{max-width:78rem;margin:0 auto;padding-inline:16px;padding-block:2.5rem 4rem;display:grid;gap:2.5rem}
+@media (min-width:640px){.page{padding-inline:2rem}}
+
+/* ---------- Masthead ---------- */
+.masthead{display:grid;gap:1rem;max-width:48rem}
+.byline{margin:0;font-family:var(--mono);font-size:.78rem;letter-spacing:.02em;color:var(--muted);display:flex;flex-wrap:wrap;gap:.25rem .9rem}
+h1{margin:0;font-family:var(--display);font-weight:500;font-size:clamp(2.1rem,1.1rem + 3.8vw,3.6rem);line-height:1.04;letter-spacing:-.018em;text-wrap:balance}
+.subject{margin:0;font-family:var(--ui);font-size:1rem;color:var(--ink-2)}
+.subject cite{font-family:var(--display);font-size:1.12em;color:var(--ink)}
+.howto{margin:0;font-family:var(--ui);font-size:.9rem;color:var(--ink-2);max-width:40rem;display:flex;flex-wrap:wrap;gap:.35rem 1rem;align-items:baseline}
+.howto .demo{text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:.2em;color:var(--ink)}
+.howto .pil{color:var(--accent);font-family:var(--mono)}
+.jump{font-family:var(--ui);font-size:.9rem;font-weight:500;color:var(--ink);text-decoration:none;border:1px solid var(--rule);border-radius:999px;padding:.4rem .8rem;justify-self:start;background:var(--paper)}
+.jump:hover{border-color:var(--ink-2)}
+@media (min-width:1000px){.jump{display:none}}
+
+/* ---------- Two panes ---------- */
+.layout{display:grid;gap:3rem;align-items:start}
+@media (min-width:1000px){.layout{grid-template-columns:minmax(0,1fr) minmax(0,28rem);gap:3.5rem}}
+
+/* ---------- Essay ---------- */
+.essay{display:grid;gap:2.4rem;min-width:0;max-width:40rem}
+.para{display:grid;gap:.65rem;min-width:0}
+.para-label{margin:0;font-family:var(--ui);font-size:.72rem;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.para p{margin:0;font-size:1.2rem;line-height:1.72;font-optical-sizing:auto}
+@media (max-width:640px){.para p{font-size:1.1rem;line-height:1.68}}
+
+.ref{text-decoration-line:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:.2em;cursor:pointer;border-radius:3px;-webkit-box-decoration-break:clone;box-decoration-break:clone;transition:background-color .15s ease}
+.ref:hover{background:var(--wash)}
+.ref.lit{background:var(--wash);box-shadow:0 0 0 2px var(--wash)}
+
+/* inline evidence card (phones and narrow windows, where the poem isn't beside the essay) */
+.evidence{background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:1rem;display:grid;gap:.8rem;font-family:var(--ui);box-shadow:0 1px 3px var(--shadow)}
+@media (min-width:1000px){.evidence{display:none!important}}
+.ev-head{display:flex;justify-content:space-between;align-items:baseline;gap:1rem}
+.ev-title{margin:0;font-size:.85rem;color:var(--ink-2);min-width:0}
+.ev-title q{color:var(--ink)}
+.textbtn{background:none;border:0;padding:.2rem 0;font-family:var(--ui);font-size:.85rem;font-weight:500;color:var(--ink);text-decoration:underline;text-decoration-color:var(--rule);text-underline-offset:.2em;cursor:pointer;flex:none}
+.textbtn:hover{text-decoration-color:var(--ink)}
+.evidence > .textbtn{justify-self:start}
+.lines{list-style:none;margin:0;padding:0;display:grid;gap:.45rem;font-family:var(--mono);font-size:.84rem;line-height:1.45}
+.lines li{display:grid;grid-template-columns:3rem minmax(0,1fr);gap:.6rem}
+.lines .m{font-family:var(--display);font-style:italic;font-size:1rem;line-height:1.3;color:var(--muted)}
+.monthrow{margin:0;display:flex;flex-wrap:wrap;gap:.3rem .7rem;font-family:var(--display);font-style:italic;font-size:1.05rem;color:var(--ink)}
+.counts{margin:0;display:flex;flex-wrap:wrap;gap:.5rem}
+.cnt{display:inline-flex;align-items:baseline;gap:.45rem;border:1px solid var(--rule);border-radius:4px;padding:.25rem .55rem;font-family:var(--mono);font-size:.85rem}
+.cnt b{font-family:var(--ui);font-weight:600;font-variant-numeric:tabular-nums}
+mark{background:var(--accent);color:var(--on-accent);border-radius:2px;padding:0 .12em}
+
+/* ---------- Numbers panel ---------- */
+.numbers{background:var(--paper);border-radius:6px;padding:1.25rem;display:grid;gap:1.25rem;font-family:var(--ui);box-shadow:0 1px 3px var(--shadow)}
+.numbers-label{margin:0;font-size:.72rem;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+@media (max-width:560px){.tiles{grid-template-columns:1fr;gap:1.1rem}}
+.tile{display:grid;gap:.3rem;align-content:start;min-width:0}
+.tile .v{font-weight:600;font-size:2.5rem;line-height:1;letter-spacing:-.02em}
+.tile .l{font-size:.88rem;color:var(--ink-2)}
+.meter{height:6px;border-radius:3px;background:var(--track);overflow:hidden;margin-top:.3rem}
+.meter span{display:block;height:100%;width:82%;background:var(--accent);border-radius:0 3px 3px 0}
+.finder{display:grid;gap:.65rem;border-top:1px solid var(--rule);padding-top:1.1rem}
+.finder label{font-size:.92rem;font-weight:500}
+.finder-row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.finder input{flex:1 1 12rem;min-width:0;font-family:var(--mono);font-size:.95rem;color:var(--ink);background:var(--bg);border:1px solid var(--rule);border-radius:4px;padding:.5rem .65rem}
+.finder input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.presets{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;font-size:.85rem;color:var(--muted)}
+.pbtn{font-family:var(--mono);font-size:.85rem;background:transparent;border:1px solid var(--rule);border-radius:4px;padding:.3rem .6rem;cursor:pointer}
+.pbtn:hover{border-color:var(--ink-2)}
+.finder-out{display:grid;gap:.75rem}
+.finder-out:empty{display:none}
+
+/* ---------- Poem pane (receipt) ---------- */
+.poem{min-width:0;display:flex;flex-direction:column;background:var(--paper);box-shadow:0 1px 3px var(--shadow),0 8px 24px var(--shadow)}
+@media (min-width:1000px){
+  .poem{position:sticky;top:calc(env(safe-area-inset-top,0px) + 1rem);max-height:calc(100vh - 2rem)}
+  .scroll{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;flex:1 1 auto;min-height:0}
+}
+.r-top{display:grid;gap:1rem;padding:1.4rem 1.25rem 1rem;border-bottom:1px dashed var(--rule)}
+.r-head{display:grid;gap:.3rem}
+.r-eyebrow{margin:0;font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.r-title{margin:0;font-family:var(--display);font-style:italic;font-weight:500;font-size:1.45rem;line-height:1.15;text-wrap:balance}
+.r-poet{margin:0;font-family:var(--ui);font-size:.88rem;color:var(--ink-2)}
+
+.chart{margin:0;display:grid;gap:.35rem}
+.chart figcaption{font-family:var(--ui);font-size:.8rem;color:var(--ink-2)}
+.chart-wrap{position:relative}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.grid{stroke:var(--rule);stroke-width:1;shape-rendering:crispEdges}
+.axis-t{fill:var(--muted);font-family:var(--mono);font-size:9px}
+.bar{fill:var(--bar);transition:fill .15s ease}
+.bar.on{fill:var(--accent)}
+.hit{fill:transparent;cursor:pointer}
+.hit:focus{outline:none}
+.hit:focus-visible{stroke:var(--accent);stroke-width:1.5}
+.tip{position:absolute;left:0;top:0;transform:translate(-50%,calc(-100% - 6px));background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:.74rem;padding:.28rem .5rem;border-radius:4px;white-space:nowrap;pointer-events:none;z-index:2}
+
+.chips-wrap{display:grid;gap:.45rem}
+.chips-label{margin:0;font-family:var(--ui);font-size:.8rem;color:var(--ink-2)}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.chip{font-family:var(--ui);font-size:.8rem;font-weight:500;line-height:1;color:var(--ink-2);background:transparent;border:1px solid var(--rule);border-radius:999px;padding:.45rem .7rem;cursor:pointer;display:inline-flex;gap:.4rem;align-items:baseline}
+.chip:hover{border-color:var(--ink-2);color:var(--ink)}
+.chip .n{font-family:var(--mono);font-size:.74rem;opacity:.75;font-variant-numeric:tabular-nums}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+
+.status{position:sticky;top:0;z-index:1;display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding:.6rem 1.25rem;background:var(--paper);border-bottom:1px solid var(--rule);font-family:var(--ui);font-size:.82rem;color:var(--ink-2)}
+.status q{color:var(--ink)}
+
+.log{list-style:none;margin:0;padding:0 1.25rem;font-family:var(--mono);font-size:.84rem;line-height:1.45}
+.month{display:grid;grid-template-columns:3rem minmax(0,1fr);gap:.75rem;padding-block:.75rem;border-top:1px dashed var(--rule);min-height:2.9rem}
+.month:first-child{border-top:0}
+.mlabel{font-family:var(--display);font-style:italic;font-size:1.02rem;line-height:1.3;color:var(--ink-2);justify-self:start;align-self:start;border-radius:3px;padding:0 .2rem;margin-left:-.2rem}
+.mlabel.on{background:var(--wash);color:var(--ink)}
+.items{list-style:none;margin:0;padding:0;display:grid;gap:.22rem;min-width:0}
+.item{padding:.1rem .35rem;margin-inline:-.35rem;border-radius:3px;transition:background-color .15s ease}
+.item.cited{cursor:pointer}
+.item.cited:hover{background:var(--wash)}
+.item .pil{color:var(--accent);margin-left:.4em;font-size:.85em}
+.item.on{background:var(--wash)}
+.item.sel{box-shadow:inset 0 0 0 1.5px var(--accent)}
+.r-foot{display:flex;justify-content:space-between;gap:1rem;margin:0 1.25rem;padding-block:.9rem 1.2rem;border-top:1px dashed var(--rule);font-family:var(--mono);font-size:.76rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.edge{height:9px;background:var(--paper);margin-bottom:-9px;
+  -webkit-mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/18px 100%;
+          mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/18px 100%}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="masthead">
+    <p class="byline"><span>Sebastian Daes</span><span>Dr.Margini</span><span>English Lit &amp; AI</span><span>9/28/26</span></p>
+    <h1>A Story of Love and Grief told through a Purchase Log</h1>
+    <p class="subject">An essay on <cite>Amazon History of a Former Nail Salon Worker</cite> by Ocean Vuong</p>
+    <p class="howto"><span>Tap an <span class="demo">underlined phrase</span> to see the lines of the poem it points to.</span><span>Tap a line marked <span class="pil">¶</span> in the poem to find where the essay talks about it.</span></p>
+    <a class="jump" href="#poem">Read the poem ↓</a>
+  </header>
+
+  <div class="layout">
+    <main class="essay" id="essay">
+      <section class="para" id="intro">
+        <h2 class="para-label">Introduction</h2>
+        <p>“Amazon History of a Former Nail Salon Worker” tells the story of a mother’s final years entirely through her online order history, moving <span class="ref" role="button" tabindex="0" data-ref="calendar">month by month</span> from <span class="ref" role="button" tabindex="0" data-ref="nail">nail supplies</span>, and finally leading towards, <span class="ref" role="button" tabindex="0" data-ref="chemo">chemotherapy supplies</span>, and finally <span class="ref" role="button" tabindex="0" data-ref="memorial">memorial and death purchases</span>. As both close reading and computational analysis reveal, the poem’s grief lives less in what it says than in grammar, by stripping away verbs, pronouns, and time words, Vuong makes reader experience the same feeling of consuming the illness does by taking the life away from her, forcing us to rebuild a whole human life from the objects she leaves behind.</p>
+        <div class="evidence" hidden aria-live="polite"></div>
+      </section>
+      <section class="para" id="computational">
+        <h2 class="para-label">Computational analysis</h2>
+        <p>While my close reading traced how “Amazon History of a Former Nail Salon Worker” tells a mother’s decline through the objects she buys, a computational analysis reveals that this decline even without what the grammar doesn’t supply is still carried just as powerfully. Counted by part of speech, the poem is roughly 82% nouns and contains almost no verbs. The corpus comparison further shows that ordinary words like <span class="ref" role="button" tabindex="0" data-ref="pronouns">her, his, and they</span> never appear. The poem uses only two prepositions, and <span class="ref" role="button" tabindex="0" data-ref="in">both are “in”</span>. Not one of them points to time, which is strange, because <span class="ref" role="button" tabindex="0" data-ref="calendar">the whole poem is arranged like a calendar</span>. Lines like <span class="ref" role="button" tabindex="0" data-ref="urn">“Eternity Aluminum Urn, Dove and Rose engraved, small.”</span> Nobody grieves in it. Nothing is mourned. Theres not after to tell us someone had died. It’s just a product, a finish, and a size. This further proves the thesis; it shows me where the feeling comes from. Close reading lets us feel the loss when the poem goes from <span class="ref" role="button" tabindex="0" data-ref="nail">nail supplies</span> to <span class="ref" role="button" tabindex="0" data-ref="plaque">a memorial plaque</span>. The data demonstrates how the loss embeds itself in the story, the poem takes away the people, the pronouns, and the time words that a person normally lives inside when she speaks. What’s left is a woman who doesn’t do or feel anything on the page. She is just a stack of nouns and brand names. So, the list isn’t just a container for the story it is the very argument. In its own grammar, the poem does the very thing it describes, it shrinks a person down to an object or objects they leave behind.</p>
+        <div class="evidence" hidden aria-live="polite"></div>
+      </section>
+      <section class="numbers" aria-labelledby="numbers-label">
+        <p class="numbers-label" id="numbers-label">From the computational analysis</p>
+        <div class="tiles">
+          <div class="tile"><span class="v">~82%</span><span class="l">nouns</span><div class="meter" role="img" aria-label="About 82 percent"><span></span></div></div>
+          <div class="tile"><span class="v">0</span><span class="l">her, his, and they</span></div>
+          <div class="tile"><span class="v">2</span><span class="l">prepositions, both “in”</span></div>
+        </div>
+        <form class="finder" id="finder" autocomplete="off">
+          <label for="word">Search the poem for any word</label>
+          <div class="finder-row"><input id="word" type="search" spellcheck="false" placeholder="Type a word"></div>
+          <div class="presets"><span>Try</span><button type="button" class="pbtn" data-w="her">her</button><button type="button" class="pbtn" data-w="his">his</button><button type="button" class="pbtn" data-w="they">they</button><button type="button" class="pbtn" data-w="in">in</button></div>
+          <div class="finder-out" id="finder-out" aria-live="polite"></div>
+        </form>
+      </section>
+      <section class="para" id="close-reading">
+        <h2 class="para-label">Close reading</h2>
+        <p>The Amazon History of a Former Nail Salon Worker shows how ordinary objects can preserve the story of a mother’s life and make her absence felt after death. The shopping-list form at the beginning presents a normal routine through <span class="ref" role="button" tabindex="0" data-ref="begin">nail supplies, food, and clothing</span>. Because these objects suggest work, personal interests, and family relationships, they establish the mother as a person with a full life before illness becomes the focus. As the monthly entries progress, everyday purchases give way to <span class="ref" role="button" tabindex="0" data-ref="walkerchemo">a walker and chemotherapy effects</span>. This chronological shift reveals her declining health without directly describing her experience, making the readers piece the story together. The strongest contrast occurs when <span class="ref" role="button" tabindex="0" data-ref="contrast">a birthday card promising that mother and son will always be together is followed by an urn next month</span> revealing how life may be taken at an instant and is devastating especially when there is hope for life. The placement of the card reassures this message of pain, while suggesting that their connection will last an eternity through loving memory. Through these purchases, the poem turns an ordinary record of consumption into a record of fighting through tough moments, pain, and especially love.</p>
+        <div class="evidence" hidden aria-live="polite"></div>
+      </section>
+      <section class="para" id="conclusion">
+        <h2 class="para-label">Conclusion</h2>
+        <p>Together, the close reading and the Computational Analysis show the same thing, the poem lists everything the mother buys, but it leaves out who she was. Vuong uses a cold, simple form, a shopping record, and lets what’s missing carry sadness. The lack of <span class="ref" role="button" tabindex="0" data-ref="pronouns">verbs and pronouns</span> doesn’t mean the poem has no feeling. Instead, it makes readers fill in love and loss by themselves. In the end, the poem shows that receipts, order histories, and data can track a person’s life but never truly capture who the person is, that’s what makes this style very interesting because it forces the reader to fill in for who this person is and will make a reader feel a much stronger connection to the poem as they are the ones connecting to whoever they make the person to be. This is a great writing method, but the reader also may never be able to truly capture the love and grief the author wants the reader to see.</p>
+        <div class="evidence" hidden aria-live="polite"></div>
+      </section>
+    </main>
+
+    <aside class="poem" id="poem" aria-label="The poem">
+      <div class="r-top">
+        <div class="r-head">
+          <p class="r-eyebrow">The poem</p>
+          <h2 class="r-title">Amazon History of a Former Nail Salon Worker</h2>
+          <p class="r-poet">Ocean Vuong</p>
+        </div>
+        <figure class="chart">
+          <figcaption>Items ordered each month</figcaption>
+          <div class="chart-wrap">
+            <svg id="chart" viewBox="0 0 400 112" role="img" aria-label="Bar chart of how many items are listed in each month of the poem, from the first March to the last November"></svg>
+            <div class="tip" id="tip" hidden></div>
+          </div>
+        </figure>
+        <div class="chips-wrap">
+          <p class="chips-label" id="chips-label">Highlight in the poem</p>
+          <div class="chips" id="chips" role="group" aria-labelledby="chips-label"></div>
+        </div>
+      </div>
+      <div class="scroll" id="scroll">
+        <div class="status" id="status" hidden aria-live="polite"><span id="status-text"></span><button class="textbtn" id="clear" type="button">Clear</button></div>
+        <ol class="log" id="log"></ol>
+        <p class="r-foot"><span id="foot-items"></span><span id="foot-months"></span></p>
+      </div>
+      <div class="edge" aria-hidden="true"></div>
+    </aside>
+  </div>
+</div>
+
+<script>
+(() => {
+  const MONTHS = [{"id": "m0", "label": "Mar.", "year": 1, "items": [{"id": "x0", "text": "Advil (ibuprofen), 4 pack", "tags": ["medicine"]}, {"id": "x1", "text": "Sally Hansen Pink Nail Polish, 6 pack", "tags": ["nail"]}, {"id": "x2", "text": "Clorox Bleach, industrial size", "tags": []}, {"id": "x3", "text": "Diane hair pins, 4 pack", "tags": []}, {"id": "x4", "text": "Seafoam handheld mirror", "tags": []}, {"id": "x5", "text": "“I Love New York” T-shirt, white, small", "tags": ["clothing"]}]}, {"id": "m1", "label": "Apr.", "year": 1, "items": [{"id": "x6", "text": "Nongshim Ramen Noodle Bowl, 24 pack", "tags": ["food"]}, {"id": "x7", "text": "Cotton Balls, 100 count", "tags": []}, {"id": "x8", "text": "“Thank You For Your Loyalty” cards, 30 count", "tags": []}, {"id": "x9", "text": "Toluene POR-15 40404 Solvent, 1 quart", "tags": []}, {"id": "x10", "text": "UV LED Nail Lamp", "tags": ["nail"]}, {"id": "x11", "text": "Cuticle Oil, value pack", "tags": ["nail"]}, {"id": "x12", "text": "Clear Acrylic Nail Tips, 500 count", "tags": ["nail"]}]}, {"id": "m2", "label": "May", "year": 1, "items": [{"id": "x13", "text": "Advil (ibuprofen), 4 pack", "tags": ["medicine"]}, {"id": "x14", "text": "Vicks VapoRub, twin pack", "tags": ["medicine"]}, {"id": "x15", "text": "Portable Electric Nail Drill", "tags": ["nail"]}, {"id": "x16", "text": "Salonpas Heat-Activated muscle patch, 40 count", "tags": ["medicine"]}, {"id": "x17", "text": "Lipstick, “Night Out Red”", "tags": []}, {"id": "x18", "text": "Little Debbie Chocolate Zebra Cakes, 4 boxes", "tags": ["food"]}]}, {"id": "m3", "label": "Jun.", "year": 1, "items": [{"id": "x19", "text": "Large faux-clay planter pots, value set", "tags": []}, {"id": "x20", "text": "Carnation Condensed Milk, 6 pack", "tags": ["food"]}, {"id": "x21", "text": "Clear Nail Art Acrylic Liquid Powder Dish Bowl, 2 pcs", "tags": ["nail"]}, {"id": "x22", "text": "Birthday Card—Son—Pop-up Mother and Son effect", "tags": ["card"]}, {"id": "x23", "text": "Nike Elite Basketball Shorts, men’s small", "tags": ["clothing"]}]}, {"id": "m4", "label": "Jul.", "year": 1, "items": [{"id": "x24", "text": "Saviland Holographic Gold Nail Powder, 6 colors", "tags": ["nail"]}, {"id": "x25", "text": "Nescafé Taster’s Choice Instant Coffee", "tags": ["food"]}, {"id": "x26", "text": "Advil (ibuprofen), 4 pack", "tags": ["medicine"]}, {"id": "x27", "text": "PIXNOR Pedicure Double-Sided Callus Remover", "tags": ["nail"]}, {"id": "x28", "text": "Bengay Medicated Cream, 3 pack", "tags": ["medicine"]}]}, {"id": "m5", "label": "Aug.", "year": 1, "items": [{"id": "x29", "text": "Newchic Ochre Summer Dress Floral Print, sz 6", "tags": ["clothing"]}, {"id": "x30", "text": "Wrigley’s Doublemint Gum, 8 pack", "tags": ["food"]}, {"id": "x31", "text": "Plastic Adirondack Lawn Chair, colonial blue", "tags": []}]}, {"id": "m6", "label": "Sep.", "year": 1, "items": [{"id": "x32", "text": "Nail buffers and files, 10 pcs", "tags": ["nail"]}, {"id": "x33", "text": "Coppertone Sunblock, 6 oz", "tags": []}]}, {"id": "m7", "label": "Oct.", "year": 1, "items": [{"id": "x34", "text": "CozyNites Fleece Blanket, pink", "tags": []}, {"id": "x35", "text": "Sleep-Ease Melatonin caps, 90 count", "tags": ["medicine"]}, {"id": "x36", "text": "Icy Hot Maximum Strength pain relief pads", "tags": ["medicine"]}]}, {"id": "m8", "label": "Nov.", "year": 1, "items": [{"id": "x37", "text": "Tampax, 24 count", "tags": []}, {"id": "x38", "text": "Faux-Resin Hair clips, 3 pack", "tags": []}]}, {"id": "m9", "label": "Dec.", "year": 1, "items": [{"id": "x39", "text": "Advil (ibuprofen) Maximum Strength, 4 pack", "tags": ["medicine"]}, {"id": "x40", "text": "True-Gro Tulip Bulbs, 24 pcs", "tags": []}]}, {"id": "m10", "label": "Jan.", "year": 2, "items": []}, {"id": "m11", "label": "Feb.", "year": 2, "items": [{"id": "x41", "text": "Healthline Compact Trigger Release Folding Walker", "tags": ["illness", "walker"]}, {"id": "x42", "text": "Yankee Candle, Midsummer’s Night, large jar", "tags": []}]}, {"id": "m12", "label": "Mar.", "year": 2, "items": [{"id": "x43", "text": "Chemo-Glam cotton head scarf, sunrise pink", "tags": ["illness", "chemo"]}, {"id": "x44", "text": "White Socks, women’s small, 12 pack", "tags": ["clothing"]}]}, {"id": "m13", "label": "Apr.", "year": 2, "items": [{"id": "x45", "text": "Chemo-Glam cotton scarf, flower garden print", "tags": ["illness", "chemo"]}, {"id": "x46", "text": "“Warrior Mom” Breast Cancer awareness T-shirt, pink and white", "tags": ["clothing", "illness"]}]}, {"id": "m14", "label": "May", "year": 2, "items": [{"id": "x47", "text": "Mueller 255 Lumbar Support Back Brace", "tags": ["illness"]}]}, {"id": "m15", "label": "Jun.", "year": 2, "items": [{"id": "x48", "text": "Birthday Card—“Son, We Will Always Be Together,” Snoopy design", "tags": ["card", "card2"]}]}, {"id": "m16", "label": "Jul.", "year": 2, "items": [{"id": "x49", "text": "Eternity Aluminum Urn, Dove and Rose engraved, small", "tags": ["memorial", "urn"]}, {"id": "x50", "text": "Perfect Memories picture frame, 8 x 11 in, black", "tags": ["memorial"]}, {"id": "x51", "text": "Burt’s Bees lip balm, Honey, 1 pc", "tags": []}]}, {"id": "m17", "label": "Aug.", "year": 2, "items": []}, {"id": "m18", "label": "Sep.", "year": 2, "items": [{"id": "x52", "text": "Easy-Grow Windowsill herb garden", "tags": []}]}, {"id": "m19", "label": "Oct.", "year": 2, "items": [{"id": "x53", "text": "YourStory Customized Memorial Plaque, 10 x 8 x 4 in", "tags": ["memorial", "plaque"]}, {"id": "x54", "text": "Winter coat, navy blue, x-small", "tags": ["clothing"]}]}, {"id": "m20", "label": "Nov.", "year": 2, "items": [{"id": "x55", "text": "Wool socks, grey, 1 pair", "tags": ["clothing"]}]}];
+
+  const CHIPS = [
+    ['nail', 'Nail supplies'], ['food', 'Food'], ['clothing', 'Clothing'], ['medicine', 'Medicine'],
+    ['illness', 'Illness'], ['card', 'Birthday cards'], ['memorial', 'Memorial']
+  ];
+  const has = (it, ...tags) => tags.some(t => it.tags.includes(t));
+  const REFS = {
+    calendar: { months: true },
+    nail: { test: it => has(it, 'nail') },
+    chemo: { test: it => has(it, 'chemo') },
+    memorial: { test: it => has(it, 'memorial') },
+    urn: { test: it => has(it, 'urn') },
+    plaque: { test: it => has(it, 'plaque') },
+    begin: { test: it => it.month.year === 1 && has(it, 'nail', 'food', 'clothing') },
+    walkerchemo: { test: it => has(it, 'walker', 'chemo') },
+    contrast: { test: it => has(it, 'card2', 'urn') },
+    pronouns: { words: ['her', 'his', 'they'] },
+    in: { words: ['in'] }
+  };
+
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const motion = () => matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+  const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+  const q = text => { const e = el('q'); e.textContent = text; return e; };
+
+  const items = [];
+  MONTHS.forEach((m, i) => { m.index = i; m.items.forEach(it => { it.month = m; it.spans = []; items.push(it); }); });
+
+  /* ---------- word matching (whole words, any case) ---------- */
+  const splitWords = text => text.split(/([\p{L}\p{N}]+)/u);
+  function appendMarked(node, text, words) {
+    node.replaceChildren();
+    if (!words.length) { node.textContent = text; return 0; }
+    let n = 0;
+    splitWords(text).forEach((part, i) => {
+      if (!part) return;
+      if (i % 2 && words.includes(part.toLowerCase())) { node.append(el('mark', null, part)); n++; }
+      else node.append(part);
+    });
+    return n;
+  }
+  const countIn = (text, w) => splitWords(text).filter((p, i) => i % 2 && p.toLowerCase() === w).length;
+  const parseWords = raw => [...new Set(raw.toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(Boolean))].slice(0, 6);
+
+  function resolve(spec) {
+    const r = { items: new Set(), months: new Set(), words: [] };
+    if (spec.months) MONTHS.forEach(m => r.months.add(m.id));
+    if (spec.test) items.forEach(it => { if (spec.test(it)) r.items.add(it.id); });
+    if (spec.words) {
+      r.words = spec.words;
+      items.forEach(it => { if (r.words.some(w => countIn(it.text, w))) r.items.add(it.id); });
+    }
+    return r;
+  }
+
+  /* ---------- the order log ---------- */
+  const log = $('#log');
+  MONTHS.forEach(m => {
+    const li = el('li', 'month'); li.id = 'm-' + m.id;
+    m.labEl = el('span', 'mlabel', m.label);
+    const ul = el('ul', 'items');
+    m.items.forEach(it => {
+      const row = el('li', 'item'); row.id = 'i-' + it.id;
+      it.tx = el('span', 'tx', it.text);
+      row.append(it.tx);
+      it.el = row; ul.append(row);
+    });
+    li.append(m.labEl, ul); m.el = li; log.append(li);
+  });
+  $('#foot-items').textContent = plural(items.length, 'item', 'items');
+  $('#foot-months').textContent = plural(MONTHS.length, 'month', 'months');
+
+  /* ---------- chart: items per month ---------- */
+  const W = 400, H = 112, L = 18, R = 2, T = 6, B = 20, MAX = 7;
+  const PW = W - L - R, PH = H - T - B, SLOT = PW / MONTHS.length, BW = Math.min(10, SLOT - 6);
+  const y = v => T + PH - (v / MAX) * PH;
+  const svg = $('#chart'), NS = 'http://www.w3.org/2000/svg';
+  const sv = (tag, attrs, text) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; return e; };
+  [0, 2, 4, 6].forEach(v => {
+    svg.append(sv('line', { x1: L, x2: W - R, y1: y(v), y2: y(v), class: 'grid' }));
+    svg.append(sv('text', { x: L - 6, y: y(v) + 3, 'text-anchor': 'end', class: 'axis-t' }, v));
+  });
+  const barPath = (x, top, w, base) => {
+    const r = Math.min(4, w / 2, base - top);
+    return `M${x},${base}V${top + r}Q${x},${top} ${x + r},${top}H${x + w - r}Q${x + w},${top} ${x + w},${top + r}V${base}Z`;
+  };
+  const tip = $('#tip'), wrap = $('.chart-wrap');
+  function showTip(m) {
+    const n = m.items.length, lit = m.items.filter(it => it.el.classList.contains('on')).length;
+    tip.textContent = `${m.label} · ${plural(n, 'item', 'items')}` + (lit ? ` · ${lit} highlighted` : '');
+    tip.hidden = false;
+    const box = wrap.getBoundingClientRect(), s = box.width / W, tw = tip.offsetWidth;
+    const cx = (L + SLOT * (m.index + 0.5)) * s;
+    tip.style.left = Math.max(tw / 2, Math.min(box.width - tw / 2, cx)) + 'px';
+    tip.style.top = y(n) * s + 'px';
+  }
+  const hideTip = () => { tip.hidden = true; };
+  MONTHS.forEach((m, i) => {
+    const cx = L + SLOT * (i + 0.5), n = m.items.length;
+    if (n) { m.bar = sv('path', { d: barPath(cx - BW / 2, y(n), BW, y(0)), class: 'bar' }); svg.append(m.bar); }
+    svg.append(sv('text', { x: cx, y: H - 5, 'text-anchor': 'middle', class: 'axis-t' }, m.label[0]));
+    const hit = sv('rect', { x: L + SLOT * i, y: T, width: SLOT, height: PH + B, class: 'hit', tabindex: 0, role: 'button', 'aria-label': `${m.label}, ${plural(n, 'item', 'items')}. Go to this month in the poem.` });
+    hit.addEventListener('pointerenter', () => showTip(m));
+    hit.addEventListener('pointerleave', hideTip);
+    hit.addEventListener('focus', () => showTip(m));
+    hit.addEventListener('blur', hideTip);
+    hit.addEventListener('click', () => { showTip(m); scrollToTarget(m.el); });
+    hit.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); scrollToTarget(m.el); } });
+    svg.append(hit);
+  });
+
+  /* ---------- chips ---------- */
+  const chipBox = $('#chips');
+  CHIPS.forEach(([tag, label]) => {
+    const b = el('button', 'chip'); b.type = 'button'; b.dataset.tag = tag; b.setAttribute('aria-pressed', 'false');
+    b.append(el('span', null, label), el('span', 'n', items.filter(it => has(it, tag)).length));
+    b.addEventListener('click', () => {
+      if (active && active.kind === 'chip' && active.chip === tag) return clearAll();
+      hideEvidence();
+      setActive({ kind: 'chip', chip: tag, label, ...resolve({ test: it => has(it, tag) }) });
+    });
+    chipBox.append(b);
+  });
+
+  /* ---------- essay links ---------- */
+  const refs = $$('.ref');
+  refs.forEach(span => {
+    const r = resolve(REFS[span.dataset.ref]);
+    items.forEach(it => { if (r.items.has(it.id)) it.spans.push(span); });
+    span.addEventListener('click', () => onRef(span));
+    span.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onRef(span); } });
+  });
+  items.forEach(it => {
+    if (!it.spans.length) return;
+    it.el.classList.add('cited');
+    it.el.tabIndex = 0;
+    it.el.setAttribute('role', 'button');
+    const pil = el('span', 'pil', '¶'); pil.setAttribute('aria-hidden', 'true');
+    it.el.append(pil, el('span', 'sr', ' (the essay discusses this line)'));
+    it.el.addEventListener('click', () => onItem(it));
+    it.el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onItem(it); } });
+  });
+
+  /* ---------- state ---------- */
+  let active = null;
+  const status = $('#status'), statusText = $('#status-text');
+  function setActive(a) { active = a; paint(); }
+  function clearAll() { active = null; hideEvidence(); paint(); }
+  function paint() {
+    const on = active ? active.items : new Set(), months = active ? active.months : new Set(), words = active ? active.words : [];
+    let hits = 0;
+    items.forEach(it => {
+      hits += appendMarked(it.tx, it.text, words);
+      it.el.classList.toggle('on', on.has(it.id));
+      it.el.classList.toggle('sel', !!active && active.kind === 'item' && active.item === it);
+    });
+    MONTHS.forEach(m => {
+      m.labEl.classList.toggle('on', months.has(m.id));
+      if (m.bar) m.bar.classList.toggle('on', months.has(m.id) || m.items.some(it => on.has(it.id)));
+    });
+    refs.forEach(s => s.classList.toggle('lit', !!active && (active.span === s || (active.kind === 'item' && active.item.spans.includes(s)))));
+    $$('.chip').forEach(c => c.setAttribute('aria-pressed', String(!!active && active.kind === 'chip' && active.chip === c.dataset.tag)));
+    status.hidden = !active;
+    if (!active) return;
+    statusText.replaceChildren('Showing ');
+    if (active.kind === 'chip') statusText.append(active.label);
+    else statusText.append(q(active.label));
+    const bits = [];
+    if (months.size) bits.push(plural(months.size, 'month', 'months'));
+    if (words.length) bits.push(plural(hits, 'match', 'matches'));
+    else if (on.size) bits.push(plural(on.size, 'line', 'lines'));
+    statusText.append(' · ' + bits.join(' · '));
+  }
+
+  const scroller = $('#scroll');
+  const paneScrolls = () => getComputedStyle(scroller).overflowY === 'auto' && scroller.scrollHeight > scroller.clientHeight;
+  function scrollToTarget(target) {
+    if (!target) return;
+    if (paneScrolls()) {
+      const pr = scroller.getBoundingClientRect(), tr = target.getBoundingClientRect();
+      scroller.scrollTo({ top: scroller.scrollTop + tr.top - pr.top - pr.height * 0.28, behavior: motion() });
+    } else {
+      target.scrollIntoView({ block: 'center', behavior: motion() });
+    }
+  }
+  function firstTarget(r) {
+    for (const m of MONTHS) {
+      if (r.months.has(m.id)) return m.el;
+      const it = m.items.find(i => r.items.has(i.id));
+      if (it) return it.el;
+    }
+    return null;
+  }
+
+  function onRef(span) {
+    if (active && active.kind === 'ref' && active.span === span) return clearAll();
+    const r = resolve(REFS[span.dataset.ref]);
+    setActive({ kind: 'ref', span, label: span.textContent, ...r });
+    showEvidence(span, r);
+    if (r.words.length) showFinder(r.words, false);
+    if (paneScrolls()) scrollToTarget(firstTarget(r));
+  }
+
+  function onItem(it) {
+    if (active && active.kind === 'item' && active.item === it) return clearAll();
+    hideEvidence();
+    setActive({ kind: 'item', item: it, label: it.text, items: new Set([it.id]), months: new Set(), words: [] });
+    it.spans[0].scrollIntoView({ block: 'center', behavior: motion() });
+  }
+
+  /* ---------- evidence card beside the paragraph (narrow screens) ---------- */
+  function lineList(ids, words) {
+    const ul = el('ul', 'lines');
+    items.forEach(it => {
+      if (!ids.has(it.id)) return;
+      const li = el('li');
+      const t = el('span', 't');
+      appendMarked(t, it.text, words);
+      li.append(el('span', 'm', it.month.label), t);
+      ul.append(li);
+    });
+    return ul;
+  }
+  function countRow(words) {
+    const p = el('p', 'counts');
+    words.forEach(w => {
+      const n = items.reduce((s, it) => s + countIn(it.text, w), 0);
+      const c = el('span', 'cnt');
+      c.append(q(w), el('b', null, n));
+      c.setAttribute('aria-label', `${w}: ${n}`);
+      p.append(c);
+    });
+    return p;
+  }
+  function hideEvidence() { $$('.evidence').forEach(c => { c.hidden = true; c.replaceChildren(); }); }
+  function showEvidence(span, r) {
+    const card = span.closest('.para').querySelector('.evidence');
+    hideEvidence();
+    const head = el('div', 'ev-head');
+    const title = el('p', 'ev-title');
+    title.append('In the poem: ', q(span.textContent));
+    const close = el('button', 'textbtn', 'Close'); close.type = 'button';
+    close.addEventListener('click', clearAll);
+    head.append(title, close);
+    card.append(head);
+    if (r.months.size) {
+      const row = el('p', 'monthrow');
+      MONTHS.forEach(m => row.append(el('span', null, m.label)));
+      card.append(row);
+    }
+    if (r.words.length) card.append(countRow(r.words));
+    if (r.items.size) card.append(lineList(r.items, r.words));
+    const target = firstTarget(r);
+    if (target) {
+      const go = el('button', 'textbtn', 'Show in the full poem ↓'); go.type = 'button';
+      go.addEventListener('click', () => scrollToTarget(target));
+      card.append(go);
+    }
+    card.hidden = false;
+  }
+
+  /* ---------- word search ---------- */
+  const input = $('#word'), out = $('#finder-out');
+  function showFinder(words, activate, setValue = true) {
+    out.replaceChildren();
+    if (!words.length) { if (activate && active && active.kind === 'search') clearAll(); return; }
+    if (setValue) input.value = words.join(' ');
+    const r = resolve({ words });
+    out.append(countRow(words));
+    if (r.items.size) out.append(lineList(r.items, words));
+    if (activate) { hideEvidence(); setActive({ kind: 'search', label: words.join(', '), ...r }); }
+  }
+  input.addEventListener('input', () => showFinder(parseWords(input.value), true, false));
+  $$('.pbtn').forEach(b => b.addEventListener('click', () => showFinder(parseWords(b.dataset.w), true)));
+  $('#finder').addEventListener('submit', e => { e.preventDefault(); showFinder(parseWords(input.value), true, false); });
+
+  $('#clear').addEventListener('click', clearAll);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && active) clearAll(); });
+})();
+</script>
+</body>
+</html>
