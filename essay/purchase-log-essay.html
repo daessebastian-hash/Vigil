@@ -1,0 +1,791 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A Story of Love and Grief told through a Purchase Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap">
+<style>
+/* Layout: the essay reads down the left; the poem's order history is pinned on the right as a receipt that lights up as you read. */
+:root {
+  --paper: #f5f3f4;
+  --sheet: #ffffff;
+  --ink: #1e1a20;
+  --ink-2: #5a5360;
+  --rule: #e2dce0;
+  --accent: #b0306a;
+  --mark: #fae1ec;
+  --c-work: #c93a78;
+  --c-everyday: #2a78d6;
+  --c-family: #eda100;
+  --c-illness: #1baf7a;
+  --c-memorial: #2b2530;
+  --shadow: 0 1px 2px rgb(30 26 32 / .06), 0 10px 28px rgb(30 26 32 / .08);
+  --f-serif: "Newsreader", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #141215; --sheet: #1c191d; --ink: #ece7ed; --ink-2: #aba2ae; --rule: #322c34;
+    --accent: #ee7aad; --mark: #3b1f2e;
+    --c-work: #d55181; --c-everyday: #3987e5; --c-family: #c98500; --c-illness: #199e70; --c-memorial: #e4dde6;
+    --shadow: 0 1px 2px rgb(0 0 0 / .4), 0 10px 28px rgb(0 0 0 / .35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #141215; --sheet: #1c191d; --ink: #ece7ed; --ink-2: #aba2ae; --rule: #322c34;
+  --accent: #ee7aad; --mark: #3b1f2e;
+  --c-work: #d55181; --c-everyday: #3987e5; --c-family: #c98500; --c-illness: #199e70; --c-memorial: #e4dde6;
+  --shadow: 0 1px 2px rgb(0 0 0 / .4), 0 10px 28px rgb(0 0 0 / .35);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--f-serif);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  font-optical-sizing: auto;
+}
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button { font: inherit; color: inherit; }
+.mono { font-family: var(--f-mono); }
+
+.wrap {
+  max-width: 74rem;
+  margin: 0 auto;
+  padding-inline: clamp(16px, 4vw, 48px);
+  padding-block: clamp(28px, 6vw, 64px) 56px;
+}
+
+/* ---------- Hero ---------- */
+.hero { display: grid; gap: 1.25rem; max-width: 46rem; margin-bottom: clamp(2rem, 5vw, 3.5rem); }
+.mla { margin: 0; font-size: .9375rem; line-height: 1.45; color: var(--ink-2); }
+.mla span { display: block; }
+.hero h1 {
+  margin: 0;
+  font-weight: 500;
+  font-size: clamp(2.125rem, 1.4rem + 3.4vw, 3.75rem);
+  line-height: 1.04;
+  letter-spacing: -.015em;
+  text-wrap: balance;
+}
+.hero .about { margin: 0; font-style: italic; font-size: 1.1875rem; line-height: 1.4; color: var(--ink-2); text-wrap: balance; }
+.howto {
+  margin: 0;
+  font-family: var(--f-mono); font-size: .8125rem; line-height: 1.5; color: var(--ink-2);
+}
+.howto .sample { color: var(--ink); text-decoration: underline 2px var(--accent); text-underline-offset: .22em; }
+
+/* ---------- Two-column layout ---------- */
+.layout {
+  display: grid;
+  gap: 2.5rem;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "poem" "essay";
+}
+.essay { grid-area: essay; min-width: 0; display: flex; flex-direction: column; gap: 2.25rem; }
+.poem { grid-area: poem; min-width: 0; }
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: minmax(0, 40rem) minmax(20rem, 23.5rem);
+    grid-template-areas: "essay poem";
+    justify-content: space-between;
+    gap: clamp(2.5rem, 4vw, 4.5rem);
+    align-items: start;
+  }
+  .poem { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 20px); }
+}
+
+/* ---------- The receipt (poem) ---------- */
+.receipt {
+  position: relative;
+  background: var(--sheet);
+  box-shadow: var(--shadow);
+  font-family: var(--f-mono);
+  font-size: .8125rem;
+  line-height: 1.5;
+  padding: 20px 20px 6px;
+  display: flex; flex-direction: column;
+}
+.tear {
+  height: 9px;
+  background: var(--sheet);
+  -webkit-mask: conic-gradient(from -45deg at bottom, #000 90deg, #0000 0) 50% / 18px 100%;
+  mask: conic-gradient(from -45deg at bottom, #000 90deg, #0000 0) 50% / 18px 100%;
+  filter: drop-shadow(0 6px 6px rgb(30 26 32 / .06));
+}
+@media (min-width: 1024px) {
+  .receipt { max-height: calc(100vh - 60px); max-height: calc(100dvh - 60px); }
+}
+.r-head { display: grid; gap: .375rem; padding-bottom: 12px; border-bottom: 1px dashed var(--rule); }
+.r-kicker { margin: 0; font-size: .6875rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); }
+.r-head h2 {
+  margin: 0; font-family: var(--f-serif); font-style: italic; font-weight: 500;
+  font-size: 1.375rem; line-height: 1.15; text-wrap: balance;
+}
+.r-author { margin: 0; font-size: .8125rem; }
+.r-meta { margin: 0; font-size: .6875rem; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.legend { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: .6875rem; color: var(--ink-2); }
+.legend li { display: inline-flex; align-items: center; gap: 6px; }
+.sw, .dot { display: inline-block; flex: none; width: 8px; height: 8px; border-radius: 2px; background: var(--c); }
+
+.status {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  margin: 10px 0 2px; padding: 7px 8px 7px 10px;
+  background: var(--mark); border-radius: 3px;
+  font-size: .75rem; line-height: 1.35;
+}
+.status button, .ev-inline .evi-close {
+  flex: none; cursor: pointer;
+  font-family: var(--f-mono); font-size: .6875rem; letter-spacing: .06em; text-transform: uppercase;
+  background: var(--sheet); border: 1px solid var(--rule); border-radius: 3px; padding: 4px 8px;
+}
+
+.log { min-height: 0; }
+@media (min-width: 1024px) {
+  .log { overflow-y: auto; overscroll-behavior: contain; margin-right: -12px; padding-right: 12px; }
+}
+.month {
+  display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: 0 .5rem;
+  padding: 7px 0; border-bottom: 1px dashed var(--rule);
+}
+.month:last-child { border-bottom: 0; }
+.m-label { margin: 0; font-size: inherit; font-weight: 600; line-height: 1.5; }
+.month ul, .ev-inline ul, .d-list, .slip ul, .results ul { list-style: none; margin: 0; padding: 0; }
+.month li {
+  display: flex; gap: .5rem; align-items: baseline;
+  margin: 0 -5px; padding: 1px 5px; border-radius: 3px;
+  transition: background-color .25s, opacity .25s;
+}
+.month li .dot, .d-list .dot, .slip .dot, .ev-inline .dot, .results .dot { transform: translateY(-1px); }
+.log.has-hl li { opacity: .32; }
+.log.has-hl li.hl { opacity: 1; background: var(--mark); }
+mark { background: var(--accent); color: var(--sheet); border-radius: 2px; padding: 0 2px; }
+
+.expand {
+  margin: 10px 0 6px; align-self: flex-start; cursor: pointer;
+  font-family: var(--f-mono); font-size: .75rem; letter-spacing: .04em;
+  background: var(--paper); border: 1px solid var(--rule); border-radius: 3px; padding: 7px 12px;
+}
+@media (max-width: 1023.98px) {
+  .poem.collapsed .log {
+    max-height: 19rem; overflow: hidden;
+    -webkit-mask-image: linear-gradient(#000 62%, transparent);
+    mask-image: linear-gradient(#000 62%, transparent);
+  }
+}
+@media (min-width: 1024px) { .expand { display: none; } }
+
+/* ---------- Essay ---------- */
+.block { display: grid; gap: .625rem; }
+.para-label {
+  margin: 0; font-family: var(--f-mono); font-size: .6875rem; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--ink-2);
+}
+.body {
+  margin: 0;
+  font-size: clamp(1.0625rem, 1rem + .3vw, 1.1875rem);
+  line-height: 1.7;
+  max-width: 38em;
+  text-wrap: pretty;
+}
+.ev {
+  color: inherit; cursor: pointer; border-radius: 2px;
+  text-decoration: underline; text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px; text-underline-offset: .22em;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  transition: background-color .2s;
+}
+.ev:hover { background: var(--mark); }
+.ev[aria-pressed="true"] { background: var(--mark); text-decoration-thickness: 2.5px; }
+.ev[data-fig]::after {
+  content: attr(data-fig);
+  display: inline-block; margin-left: .25em; vertical-align: super;
+  font-family: var(--f-mono); font-size: .6em; line-height: 1; letter-spacing: .04em;
+  color: var(--accent); text-decoration: none;
+}
+
+.ev-inline {
+  font-family: var(--f-mono); font-size: .8125rem; line-height: 1.5;
+  background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px;
+  padding: 12px 14px; display: grid; gap: 8px;
+}
+.evi-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: .75rem; color: var(--ink-2); }
+.ev-inline li { display: grid; grid-template-columns: 2.75rem auto minmax(0, 1fr); gap: .5rem; align-items: baseline; }
+.evi-m { font-weight: 600; }
+@media (min-width: 1024px) { .ev-inline { display: none; } }
+
+/* ---------- Figures ---------- */
+.fig {
+  margin: 0; display: grid; gap: 1rem;
+  padding-top: 1.125rem; border-top: 1px solid var(--rule);
+  scroll-margin-top: 24px;
+}
+.fig:focus { outline: none; }
+.fig-head { display: grid; gap: .25rem; }
+.fig-num { margin: 0; font-family: var(--f-mono); font-size: .6875rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.fig h3 { margin: 0; font-weight: 500; font-size: 1.375rem; line-height: 1.2; text-wrap: balance; }
+.cap { margin: 0; font-size: .9375rem; line-height: 1.5; color: var(--ink-2); max-width: 36em; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+  font-family: var(--f-mono); font-size: .75rem; line-height: 1; font-weight: 500;
+  padding: 7px 11px; border: 1px solid var(--rule); border-radius: 999px;
+  background: var(--sheet); color: var(--ink);
+  transition: background-color .2s, border-color .2s, color .2s;
+}
+.chip .n { color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.chip:hover { border-color: var(--ink-2); }
+.chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.chip[aria-pressed="true"] .n { color: inherit; opacity: .7; }
+
+/* Fig 1: chart */
+.chart-wrap { position: relative; }
+.chart {
+  display: grid; grid-template-columns: repeat(21, minmax(0, 1fr));
+  align-items: end; gap: 0;
+}
+.col {
+  appearance: none; margin: 0; border: 0; background: none; cursor: pointer;
+  padding: 8px 0 0; border-radius: 4px 4px 0 0;
+  display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 0;
+  font-family: var(--f-mono); font-size: .625rem; line-height: 1; color: var(--ink-2);
+  transition: background-color .2s;
+}
+.col:hover { background: color-mix(in srgb, var(--mark) 60%, transparent); }
+.col.sel { background: var(--mark); color: var(--ink); }
+.stack { display: flex; flex-direction: column-reverse; gap: 2px; width: calc(100% - 4px); max-width: 22px; }
+.sq {
+  display: block; width: 100%; aspect-ratio: 1; border-radius: 2px; background: var(--c);
+  transition: opacity .2s;
+  animation: sq-in .32s cubic-bezier(.2, .7, .3, 1) both;
+}
+@keyframes sq-in { from { opacity: 0; transform: translateY(6px); } }
+.chart.filtering .sq:not(.on) { opacity: .14; }
+.base { width: 100%; height: 1px; background: var(--ink-2); }
+.lbl { padding-bottom: 6px; }
+.col.sel .lbl { font-weight: 600; color: var(--accent); }
+.tip {
+  position: absolute; z-index: 5; pointer-events: none;
+  max-width: 15rem; width: max-content;
+  background: var(--ink); color: var(--paper);
+  font-family: var(--f-mono); font-size: .75rem; line-height: 1.35;
+  padding: 6px 9px; border-radius: 4px;
+  transform: translate(-50%, calc(-100% - 8px));
+}
+.tip small { display: block; opacity: .75; font-size: .6875rem; margin-top: 2px; }
+
+.detail {
+  font-family: var(--f-mono); font-size: .8125rem; line-height: 1.5;
+  background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px;
+  padding: 12px 14px 14px; display: grid; gap: 10px;
+}
+.detail-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; }
+.d-title { display: flex; align-items: baseline; gap: 10px; }
+.d-month { font-size: 1.125rem; font-weight: 600; }
+.d-meta { font-size: .75rem; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.steps { display: flex; gap: 6px; }
+.step {
+  cursor: pointer; font-family: var(--f-mono); font-size: .75rem;
+  background: var(--paper); border: 1px solid var(--rule); border-radius: 3px; padding: 5px 10px;
+}
+.step:disabled { opacity: .4; cursor: default; }
+.d-list li, .slip li, .results li { display: flex; gap: .5rem; align-items: baseline; }
+.d-empty { margin: 0; color: var(--ink-2); }
+
+/* Fig 2: grammar */
+.tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.tile { display: grid; gap: 6px; align-content: start; border-top: 2px solid var(--ink); padding-top: 10px; }
+.tile .v { font-family: var(--f-mono); font-weight: 600; font-size: clamp(1.5rem, 1.05rem + 2vw, 2.25rem); line-height: 1; font-variant-numeric: tabular-nums; }
+.tile .k { font-size: .875rem; line-height: 1.35; color: var(--ink-2); }
+.bar { height: 6px; border-radius: 3px; background: var(--rule); overflow: hidden; }
+.bar i { display: block; height: 100%; width: 82%; border-radius: 3px; background: var(--ink); }
+.search { display: grid; gap: 10px; }
+.search label, .chips-label { font-family: var(--f-mono); font-size: .6875rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); }
+.search input {
+  width: 100%; font-family: var(--f-mono); font-size: 1rem;
+  padding: 10px 12px; border: 1px solid var(--rule); border-radius: 4px;
+  background: var(--sheet); color: var(--ink);
+}
+.search input::placeholder { color: var(--ink-2); opacity: .8; }
+.results {
+  font-family: var(--f-mono); font-size: .8125rem; line-height: 1.5;
+  background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px;
+  padding: 12px 14px; display: grid; gap: 6px;
+}
+.r-head { color: var(--ink-2); font-size: .75rem; }
+.results .rm { flex: none; width: 2.75rem; font-weight: 600; }
+
+/* Fig 3: one month apart */
+.turn { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 14px; align-items: start; }
+.turn .arrow { align-self: center; }
+.slip-wrap { min-width: 0; }
+.slip {
+  background: var(--sheet); box-shadow: var(--shadow);
+  font-family: var(--f-mono); font-size: .8125rem; line-height: 1.5;
+  padding: 14px 16px 12px; display: grid; gap: 8px;
+}
+.slip-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding-bottom: 6px; border-bottom: 1px dashed var(--rule); }
+.slip-head b { font-size: 1.125rem; }
+.slip-head span { font-size: .6875rem; color: var(--ink-2); }
+.arrow { display: grid; justify-items: center; gap: 2px; font-family: var(--f-mono); font-size: .6875rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); }
+.arrow b { font-size: 1.5rem; font-weight: 400; color: var(--ink); letter-spacing: 0; }
+@media (max-width: 600px) {
+  .turn { grid-template-columns: minmax(0, 1fr); }
+  .arrow b { transform: rotate(90deg); }
+}
+
+.foot {
+  margin-top: clamp(3rem, 6vw, 4.5rem); padding-top: 1rem; border-top: 1px solid var(--rule);
+  font-family: var(--f-mono); font-size: .75rem; color: var(--ink-2);
+  display: flex; flex-wrap: wrap; gap: 4px 18px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <p class="mla"><span>Sebastian Daes</span><span>Dr.Margini</span><span>9/28/26</span><span>English Lit &amp; AI</span></p>
+    <h1>A Story of Love and Grief told through a Purchase Log</h1>
+    <p class="about">An essay on “Amazon History of a Former Nail Salon Worker” by Ocean Vuong</p>
+    <p class="howto"><span class="sample">Underlined phrases</span> are linked to the poem. Select one to light up the lines it talks about.</p>
+  </header>
+
+  <div class="layout">
+
+    <aside class="poem collapsed" id="poem" aria-label="The poem">
+      <div class="receipt">
+        <div class="r-head">
+          <p class="r-kicker">The poem</p>
+          <h2>Amazon History of a Former Nail Salon Worker</h2>
+          <p class="r-author">Ocean Vuong</p>
+          <p class="r-meta" id="r-meta"></p>
+          <ul class="legend" id="legend"></ul>
+        </div>
+        <div class="status" id="status" role="status" aria-live="polite" hidden>
+          <span id="status-text"></span>
+          <button type="button" id="clear">Clear</button>
+        </div>
+        <div class="log" id="log">
+          <section class="month" id="m1"><h3 class="m-label">Mar.</h3><ul><li id="m1-0" style="--c:var(--c-illness)"><span class="dot" aria-hidden="true"></span><span class="t">Advil (ibuprofen), 4 pack</span></li><li id="m1-1" style="--c:var(--c-work)"><span class="dot" aria-hidden="true"></span><span class="t">Sally Hansen Pink Nail Polish, 6 pack</span></li><li id="m1-2" style="--c:var(--c-work)"><span class="dot" aria-hidden="true"></span><span class="t">Clorox Bleach, industrial size</span></li><li id="m1-3" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">Diane hair pins, 4 pack</span></li><li id="m1-4" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">Seafoam handheld mirror</span></li><li id="m1-5" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">“I Love New York” T-shirt, white, small</span></li></ul></section>
+          <section class="month" id="m2"><h3 class="m-label">Apr.</h3><ul><li id="m2-0" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">Nongshim Ramen Noodle Bowl, 24 pack</span></li><li id="m2-1" style="--c:var(--c-work)"><span class="dot" aria-hidden="true"></span><span class="t">Cotton Balls, 100 count</span></li><li id="m2-2" style="--c:var(--c-work)"><span class="dot" aria-hidden="true"></span><span class="t">“Thank You For Your Loyalty” cards, 30 count</span></li><li id="m2-3" style="--c:var(--c-work)"><span class="dot" aria-hidden="true"></span><span class="t">Toluene POR-15 40404 Solvent, 1 quart</span></li><li id="m2-4" style="--c:var(--c-work)"><span class="dot" aria-hidden="true"></span><span class="t">UV LED Nail Lamp</span></li><li id="m2-5" style="--c:var(--c-work)"><span class="dot" aria-hidden="true"></span><span class="t">Cuticle Oil, value pack</span></li><li id="m2-6" style="--c:var(--c-work)"><span class="dot" aria-hidden="true"></span><span class="t">Clear Acrylic Nail Tips, 500 count</span></li></ul></section>
+          <section class="month" id="m3"><h3 class="m-label">May</h3><ul><li id="m3-0" style="--c:var(--c-illness)"><span class="dot" aria-hidden="true"></span><span class="t">Advil (ibuprofen), 4 pack</span></li><li id="m3-1" style="--c:var(--c-illness)"><span class="dot" aria-hidden="true"></span><span class="t">Vicks VapoRub, twin pack</span></li><li id="m3-2" style="--c:var(--c-work)"><span class="dot" aria-hidden="true"></span><span class="t">Portable Electric Nail Drill</span></li><li id="m3-3" style="--c:var(--c-illness)"><span class="dot" aria-hidden="true"></span><span class="t">Salonpas Heat-Activated muscle patch, 40 count</span></li><li id="m3-4" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">Lipstick, “Night Out Red”</span></li><li id="m3-5" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">Little Debbie Chocolate Zebra Cakes, 4 boxes</span></li></ul></section>
+          <section class="month" id="m4"><h3 class="m-label">Jun.</h3><ul><li id="m4-0" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">Large faux-clay planter pots, value set</span></li><li id="m4-1" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">Carnation Condensed Milk, 6 pack</span></li><li id="m4-2" style="--c:var(--c-work)"><span class="dot" aria-hidden="true"></span><span class="t">Clear Nail Art Acrylic Liquid Powder Dish Bowl, 2 pcs</span></li><li id="m4-3" style="--c:var(--c-family)"><span class="dot" aria-hidden="true"></span><span class="t">Birthday Card—Son—Pop-up Mother and Son effect</span></li><li id="m4-4" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">Nike Elite Basketball Shorts, men’s small</span></li></ul></section>
+          <section class="month" id="m5"><h3 class="m-label">Jul.</h3><ul><li id="m5-0" style="--c:var(--c-work)"><span class="dot" aria-hidden="true"></span><span class="t">Saviland Holographic Gold Nail Powder, 6 colors</span></li><li id="m5-1" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">Nescafé Taster’s Choice Instant Coffee</span></li><li id="m5-2" style="--c:var(--c-illness)"><span class="dot" aria-hidden="true"></span><span class="t">Advil (ibuprofen), 4 pack</span></li><li id="m5-3" style="--c:var(--c-work)"><span class="dot" aria-hidden="true"></span><span class="t">PIXNOR Pedicure Double-Sided Callus Remover</span></li><li id="m5-4" style="--c:var(--c-illness)"><span class="dot" aria-hidden="true"></span><span class="t">Bengay Medicated Cream, 3 pack</span></li></ul></section>
+          <section class="month" id="m6"><h3 class="m-label">Aug.</h3><ul><li id="m6-0" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">Newchic Ochre Summer Dress Floral Print, sz 6</span></li><li id="m6-1" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">Wrigley’s Doublemint Gum, 8 pack</span></li><li id="m6-2" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">Plastic Adirondack Lawn Chair, colonial blue</span></li></ul></section>
+          <section class="month" id="m7"><h3 class="m-label">Sep.</h3><ul><li id="m7-0" style="--c:var(--c-work)"><span class="dot" aria-hidden="true"></span><span class="t">Nail buffers and files, 10 pcs</span></li><li id="m7-1" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">Coppertone Sunblock, 6 oz</span></li></ul></section>
+          <section class="month" id="m8"><h3 class="m-label">Oct.</h3><ul><li id="m8-0" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">CozyNites Fleece Blanket, pink</span></li><li id="m8-1" style="--c:var(--c-illness)"><span class="dot" aria-hidden="true"></span><span class="t">Sleep-Ease Melatonin caps, 90 count</span></li><li id="m8-2" style="--c:var(--c-illness)"><span class="dot" aria-hidden="true"></span><span class="t">Icy Hot Maximum Strength pain relief pads</span></li></ul></section>
+          <section class="month" id="m9"><h3 class="m-label">Nov.</h3><ul><li id="m9-0" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">Tampax, 24 count</span></li><li id="m9-1" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">Faux-Resin Hair clips, 3 pack</span></li></ul></section>
+          <section class="month" id="m10"><h3 class="m-label">Dec.</h3><ul><li id="m10-0" style="--c:var(--c-illness)"><span class="dot" aria-hidden="true"></span><span class="t">Advil (ibuprofen) Maximum Strength, 4 pack</span></li><li id="m10-1" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">True-Gro Tulip Bulbs, 24 pcs</span></li></ul></section>
+          <section class="month" id="m11"><h3 class="m-label">Jan.</h3><ul></ul></section>
+          <section class="month" id="m12"><h3 class="m-label">Feb.</h3><ul><li id="m12-0" style="--c:var(--c-illness)"><span class="dot" aria-hidden="true"></span><span class="t">Healthline Compact Trigger Release Folding Walker</span></li><li id="m12-1" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">Yankee Candle, Midsummer’s Night, large jar</span></li></ul></section>
+          <section class="month" id="m13"><h3 class="m-label">Mar.</h3><ul><li id="m13-0" style="--c:var(--c-illness)"><span class="dot" aria-hidden="true"></span><span class="t">Chemo-Glam cotton head scarf, sunrise pink</span></li><li id="m13-1" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">White Socks, women’s small, 12 pack</span></li></ul></section>
+          <section class="month" id="m14"><h3 class="m-label">Apr.</h3><ul><li id="m14-0" style="--c:var(--c-illness)"><span class="dot" aria-hidden="true"></span><span class="t">Chemo-Glam cotton scarf, flower garden print</span></li><li id="m14-1" style="--c:var(--c-illness)"><span class="dot" aria-hidden="true"></span><span class="t">“Warrior Mom” Breast Cancer awareness T-shirt, pink and white</span></li></ul></section>
+          <section class="month" id="m15"><h3 class="m-label">May</h3><ul><li id="m15-0" style="--c:var(--c-illness)"><span class="dot" aria-hidden="true"></span><span class="t">Mueller 255 Lumbar Support Back Brace</span></li></ul></section>
+          <section class="month" id="m16"><h3 class="m-label">Jun.</h3><ul><li id="m16-0" style="--c:var(--c-family)"><span class="dot" aria-hidden="true"></span><span class="t">Birthday Card—“Son, We Will Always Be Together,” Snoopy design</span></li></ul></section>
+          <section class="month" id="m17"><h3 class="m-label">Jul.</h3><ul><li id="m17-0" style="--c:var(--c-memorial)"><span class="dot" aria-hidden="true"></span><span class="t">Eternity Aluminum Urn, Dove and Rose engraved, small</span></li><li id="m17-1" style="--c:var(--c-memorial)"><span class="dot" aria-hidden="true"></span><span class="t">Perfect Memories picture frame, 8 x 11 in, black</span></li><li id="m17-2" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">Burt’s Bees lip balm, Honey, 1 pc</span></li></ul></section>
+          <section class="month" id="m18"><h3 class="m-label">Aug.</h3><ul></ul></section>
+          <section class="month" id="m19"><h3 class="m-label">Sep.</h3><ul><li id="m19-0" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">Easy-Grow Windowsill herb garden</span></li></ul></section>
+          <section class="month" id="m20"><h3 class="m-label">Oct.</h3><ul><li id="m20-0" style="--c:var(--c-memorial)"><span class="dot" aria-hidden="true"></span><span class="t">YourStory Customized Memorial Plaque, 10 x 8 x 4 in</span></li><li id="m20-1" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">Winter coat, navy blue, x-small</span></li></ul></section>
+          <section class="month" id="m21"><h3 class="m-label">Nov.</h3><ul><li id="m21-0" style="--c:var(--c-everyday)"><span class="dot" aria-hidden="true"></span><span class="t">Wool socks, grey, 1 pair</span></li></ul></section>
+        </div>
+        <button type="button" class="expand" id="expand" aria-controls="log" aria-expanded="false">Show all 21 months</button>
+      </div>
+      <div class="tear" aria-hidden="true"></div>
+    </aside>
+
+    <main class="essay">
+      <div class="block">
+        <p class="para-label">Introduction</p>
+        <p class="body">“Amazon History of a Former Nail Salon Worker” tells the story of a mother’s final years entirely through her online order history, moving month by month from <a class="ev" href="#poem" role="button" data-ev="nail">nail supplies</a>, and finally leading towards, <a class="ev" href="#poem" role="button" data-ev="chemo">chemotherapy supplies</a>, and finally <a class="ev" href="#poem" role="button" data-ev="memorial">memorial and death purchases</a>. As both close reading and computational analysis reveal, the poem’s grief lives less in what it says than in grammar, by <a class="ev" href="#fig-grammar" role="button" data-ev="grammar" data-fig="Fig. 2">stripping away verbs, pronouns, and time words</a>, Vuong makes reader experience the same feeling of consuming the illness does by taking the life away from her, forcing us to rebuild a whole human life from the objects she leaves behind.</p>
+      </div>
+      <div data-slot="fig1"></div>
+      <div class="block">
+        <p class="para-label">Computational analysis</p>
+        <p class="body">While my close reading traced how “Amazon History of a Former Nail Salon Worker” tells a mother’s decline through the objects she buys, a computational analysis reveals that this decline even without what the grammar doesn’t supply is still carried just as powerfully. Counted by part of speech, the poem is <a class="ev" href="#fig-grammar" role="button" data-ev="nouns" data-fig="Fig. 2">roughly 82% nouns and contains almost no verbs</a>. The corpus comparison further shows that <a class="ev" href="#poem" role="button" data-ev="pronouns">ordinary words like her, his, and they never appear</a>. <a class="ev" href="#poem" role="button" data-ev="prep">The poem uses only two prepositions, and both are “in”</a>. Not one of them points to time, which is strange, because the whole poem is arranged like a calendar. Lines like <a class="ev" href="#poem" role="button" data-ev="urn">“Eternity Aluminum Urn, Dove and Rose engraved, small.”</a> Nobody grieves in it. Nothing is mourned. <a class="ev" href="#poem" role="button" data-ev="after">Theres not after to tell us someone had died</a>. It’s just a product, a finish, and a size. This further proves the thesis; it shows me where the feeling comes from. Close reading lets us feel the loss <a class="ev" href="#poem" role="button" data-ev="span">when the poem goes from nail supplies to a memorial plaque</a>. The data demonstrates how the loss embeds itself in the story, the poem takes away the people, the pronouns, and the time words that a person normally lives inside when she speaks. What’s left is a woman who doesn’t do or feel anything on the page. She is just a stack of nouns and brand names. So, the list isn’t just a container for the story it is the very argument. In its own grammar, the poem does the very thing it describes, it shrinks a person down to an object or objects they leave behind.</p>
+      </div>
+      <div data-slot="fig2"></div>
+      <div class="block">
+        <p class="para-label">Close reading</p>
+        <p class="body">The Amazon History of a Former Nail Salon Worker shows how ordinary objects can preserve the story of a mother’s life and make her absence felt after death. The shopping-list form at the beginning <a class="ev" href="#poem" role="button" data-ev="routine">presents a normal routine through nail supplies, food, and clothing</a>. Because these objects suggest work, personal interests, and family relationships, they establish the mother as a person with a full life before illness becomes the focus. As the monthly entries progress, <a class="ev" href="#poem" role="button" data-ev="decline">everyday purchases give way to a walker and chemotherapy effects</a>. This chronological shift reveals her declining health without directly describing her experience, making the readers piece the story together. The strongest contrast occurs when <a class="ev" href="#poem" role="button" data-ev="turn">a birthday card promising that mother and son will always be together is followed by an urn next month</a> revealing how life may be taken at an instant and is devastating especially when there is hope for life. The placement of the card reassures this message of pain, while suggesting that their connection will last an eternity through loving memory. Through these purchases, the poem turns an ordinary record of consumption into a record of fighting through tough moments, pain, and especially love.</p>
+      </div>
+      <div data-slot="fig3"></div>
+      <div class="block">
+        <p class="para-label">Conclusion</p>
+        <p class="body">Together, the close reading and the Computational Analysis show the same thing, the poem lists everything the mother buys, but it leaves out who she was. Vuong uses a cold, simple form, a shopping record, and lets what’s missing carry sadness. <a class="ev" href="#fig-grammar" role="button" data-ev="lack" data-fig="Fig. 2">The lack of verbs and pronouns</a> doesn’t mean the poem has no feeling. Instead, it makes readers fill in love and loss by themselves. In the end, the poem shows that receipts, order histories, and data can track a person’s life but never truly capture who the person is, that’s what makes this style very interesting because it forces the reader to fill in for who this person is and will make a reader feel a much stronger connection to the poem as they are the ones connecting to whoever they make the person to be. This is a great writing method, but the reader also may never be able to truly capture the love and grief the author wants the reader to see.</p>
+      </div>
+    </main>
+  </div>
+
+  <footer class="foot">
+    <span>Essay by Sebastian Daes</span>
+    <span>Poem by Ocean Vuong</span>
+  </footer>
+</div>
+
+<template id="fig1">
+      <figure class="fig" id="fig-months" tabindex="-1" aria-labelledby="fig1-title">
+        <figcaption class="fig-head">
+          <p class="fig-num">Fig. 1</p>
+          <h3 id="fig1-title">The poem, month by month</h3>
+          <p class="cap">Each square is one item in the order history, colored by what kind of thing it is. Select a month to read its order, or a kind to find it in the poem.</p>
+        </figcaption>
+        <div class="chips" id="kinds" role="group" aria-label="Kinds of items"></div>
+        <div class="chart-wrap">
+          <div class="chart" id="chart" role="group" aria-label="Items in each month of the order history"></div>
+          <div class="tip" id="tip" hidden></div>
+        </div>
+        <div class="detail" id="detail" aria-live="polite"></div>
+      </figure>
+</template>
+
+<template id="fig2">
+      <figure class="fig" id="fig-grammar" tabindex="-1" aria-labelledby="fig2-title">
+        <figcaption class="fig-head">
+          <p class="fig-num">Fig. 2</p>
+          <h3 id="fig2-title">What the grammar leaves out</h3>
+          <p class="cap">The counts from the computational analysis, next to a search you can run on the poem yourself.</p>
+        </figcaption>
+        <div class="tiles">
+          <div class="tile">
+            <span class="v">≈82%</span>
+            <div class="bar" aria-hidden="true"><i></i></div>
+            <span class="k">of the words are nouns, counted by part of speech</span>
+          </div>
+          <div class="tile">
+            <span class="v" id="t-pron">0</span>
+            <span class="k">times “her,” “his,” or “they” appear</span>
+          </div>
+          <div class="tile">
+            <span class="v" id="t-in">2</span>
+            <span class="k">prepositions, and both are “in”</span>
+          </div>
+        </div>
+        <div class="search">
+          <label for="q">Search the poem</label>
+          <input id="q" type="search" autocomplete="off" spellcheck="false" placeholder="Try a word, like mother">
+          <span class="chips-label">Words from the essay</span>
+          <div class="chips" id="words" role="group" aria-label="Words from the essay"></div>
+          <div class="results" id="results" aria-live="polite"></div>
+        </div>
+      </figure>
+</template>
+
+<template id="fig3">
+      <figure class="fig" id="fig-turn" tabindex="-1" aria-labelledby="fig3-title">
+        <figcaption class="fig-head">
+          <p class="fig-num">Fig. 3</p>
+          <h3 id="fig3-title">One month apart</h3>
+          <p class="cap">Months 16 and 17 of the order history, as they appear in the poem.</p>
+        </figcaption>
+        <div class="turn" id="turn"></div>
+      </figure>
+</template>
+
+<script>
+(() => {
+  const CATS = [
+    { id: 'work', label: 'Nail salon work' },
+    { id: 'everyday', label: 'Food, clothes & home' },
+    { id: 'family', label: 'Birthday cards' },
+    { id: 'illness', label: 'Medicine & illness' },
+    { id: 'memorial', label: 'Memorial' }
+  ];
+  const POEM = [["Mar.", [["Advil (ibuprofen), 4 pack", "illness"], ["Sally Hansen Pink Nail Polish, 6 pack", "work"], ["Clorox Bleach, industrial size", "work"], ["Diane hair pins, 4 pack", "everyday"], ["Seafoam handheld mirror", "everyday"], ["“I Love New York” T-shirt, white, small", "everyday"]]], ["Apr.", [["Nongshim Ramen Noodle Bowl, 24 pack", "everyday"], ["Cotton Balls, 100 count", "work"], ["“Thank You For Your Loyalty” cards, 30 count", "work"], ["Toluene POR-15 40404 Solvent, 1 quart", "work"], ["UV LED Nail Lamp", "work"], ["Cuticle Oil, value pack", "work"], ["Clear Acrylic Nail Tips, 500 count", "work"]]], ["May", [["Advil (ibuprofen), 4 pack", "illness"], ["Vicks VapoRub, twin pack", "illness"], ["Portable Electric Nail Drill", "work"], ["Salonpas Heat-Activated muscle patch, 40 count", "illness"], ["Lipstick, “Night Out Red”", "everyday"], ["Little Debbie Chocolate Zebra Cakes, 4 boxes", "everyday"]]], ["Jun.", [["Large faux-clay planter pots, value set", "everyday"], ["Carnation Condensed Milk, 6 pack", "everyday"], ["Clear Nail Art Acrylic Liquid Powder Dish Bowl, 2 pcs", "work"], ["Birthday Card—Son—Pop-up Mother and Son effect", "family"], ["Nike Elite Basketball Shorts, men’s small", "everyday"]]], ["Jul.", [["Saviland Holographic Gold Nail Powder, 6 colors", "work"], ["Nescafé Taster’s Choice Instant Coffee", "everyday"], ["Advil (ibuprofen), 4 pack", "illness"], ["PIXNOR Pedicure Double-Sided Callus Remover", "work"], ["Bengay Medicated Cream, 3 pack", "illness"]]], ["Aug.", [["Newchic Ochre Summer Dress Floral Print, sz 6", "everyday"], ["Wrigley’s Doublemint Gum, 8 pack", "everyday"], ["Plastic Adirondack Lawn Chair, colonial blue", "everyday"]]], ["Sep.", [["Nail buffers and files, 10 pcs", "work"], ["Coppertone Sunblock, 6 oz", "everyday"]]], ["Oct.", [["CozyNites Fleece Blanket, pink", "everyday"], ["Sleep-Ease Melatonin caps, 90 count", "illness"], ["Icy Hot Maximum Strength pain relief pads", "illness"]]], ["Nov.", [["Tampax, 24 count", "everyday"], ["Faux-Resin Hair clips, 3 pack", "everyday"]]], ["Dec.", [["Advil (ibuprofen) Maximum Strength, 4 pack", "illness"], ["True-Gro Tulip Bulbs, 24 pcs", "everyday"]]], ["Jan.", []], ["Feb.", [["Healthline Compact Trigger Release Folding Walker", "illness"], ["Yankee Candle, Midsummer’s Night, large jar", "everyday"]]], ["Mar.", [["Chemo-Glam cotton head scarf, sunrise pink", "illness"], ["White Socks, women’s small, 12 pack", "everyday"]]], ["Apr.", [["Chemo-Glam cotton scarf, flower garden print", "illness"], ["“Warrior Mom” Breast Cancer awareness T-shirt, pink and white", "illness"]]], ["May", [["Mueller 255 Lumbar Support Back Brace", "illness"]]], ["Jun.", [["Birthday Card—“Son, We Will Always Be Together,” Snoopy design", "family"]]], ["Jul.", [["Eternity Aluminum Urn, Dove and Rose engraved, small", "memorial"], ["Perfect Memories picture frame, 8 x 11 in, black", "memorial"], ["Burt’s Bees lip balm, Honey, 1 pc", "everyday"]]], ["Aug.", []], ["Sep.", [["Easy-Grow Windowsill herb garden", "everyday"]]], ["Oct.", [["YourStory Customized Memorial Plaque, 10 x 8 x 4 in", "memorial"], ["Winter coat, navy blue, x-small", "everyday"]]], ["Nov.", [["Wool socks, grey, 1 pair", "everyday"]]]];
+
+  const $ = (s, r = document) => r.querySelector(s);
+  const esc = s => s.replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  const wide = matchMedia('(min-width: 1024px)');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const behavior = () => (reduce.matches ? 'auto' : 'smooth');
+  const catOrder = Object.fromEntries(CATS.map((c, i) => [c.id, i]));
+  const catLabel = Object.fromEntries(CATS.map(c => [c.id, c.label]));
+
+  const months = POEM.map(([label, items], mi) => ({
+    n: mi + 1, label,
+    items: items.map(([t, c], ii) => ({ id: `m${mi + 1}-${ii}`, t, c, m: mi + 1 }))
+  }));
+  const TOTAL = months.length;
+  const allItems = months.flatMap(m => m.items);
+  const byId = new Map(allItems.map(it => [it.id, it]));
+  const idsWhere = f => allItems.filter(f).map(it => it.id);
+  const idOf = s => allItems.find(it => it.t.includes(s)).id;
+  const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+  const monthMeta = m => `Month ${m.n} of ${TOTAL}`;
+
+  // ---- place the figures between the essay's paragraphs
+  document.querySelectorAll('[data-slot]').forEach(slot => {
+    slot.replaceWith($(`#${slot.dataset.slot}`).content.cloneNode(true));
+  });
+
+  // ---- word matching (whole words, any case)
+  const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '\\s+');
+  const wordRe = words => new RegExp(`(?<![\\p{L}\\p{N}])(?:${words.map(escRe).join('|')})(?![\\p{L}\\p{N}])`, 'giu');
+  const markHTML = (t, re) => {
+    if (!re) return esc(t);
+    let out = '', last = 0;
+    for (const m of t.matchAll(re)) {
+      out += esc(t.slice(last, m.index)) + '<mark>' + esc(m[0]) + '</mark>';
+      last = m.index + m[0].length;
+    }
+    return out + esc(t.slice(last));
+  };
+  const countWords = words => {
+    const re = wordRe(words);
+    return allItems.reduce((n, it) => n + [...it.t.matchAll(re)].length, 0);
+  };
+  const joinOr = ws => {
+    const q = ws.map(w => `“${w}”`);
+    return q.length < 3 ? q.join(' or ') : `${q.slice(0, -1).join(', ')}, or ${q[q.length - 1]}`;
+  };
+
+  // ---- the receipt
+  const log = $('#log');
+  const statusEl = $('#status');
+  const statusText = $('#status-text');
+  $('#r-meta').textContent = `${TOTAL} months · ${allItems.length} items`;
+  $('#legend').innerHTML = CATS.map(c => `<li><span class="sw" style="--c:var(--c-${c.id})"></span>${esc(c.label)}</li>`).join('');
+
+  function paint(ids, re) {
+    const set = new Set(ids);
+    for (const it of allItems) {
+      const li = document.getElementById(it.id);
+      li.classList.toggle('hl', set.has(it.id));
+      li.querySelector('.t').innerHTML = markHTML(it.t, set.has(it.id) ? re : null);
+    }
+    log.classList.toggle('has-hl', set.size > 0);
+  }
+  function scrollLog(el) {
+    if (!wide.matches || !el) return;
+    const top = log.scrollTop + el.getBoundingClientRect().top - log.getBoundingClientRect().top - 28;
+    log.scrollTo({ top, behavior: behavior() });
+  }
+  // h: { label, ids?, words?, none?, scrollTo? }  → returns { ids, re, text }
+  function highlight(h) {
+    if (!h) { paint([], null); statusEl.hidden = true; return null; }
+    let ids = h.ids || [], re = null;
+    if (h.words) {
+      re = wordRe(h.words);
+      const test = new RegExp(re.source, 'iu');
+      ids = idsWhere(it => test.test(it.t));
+    }
+    paint(ids, re);
+    const text = ids.length
+      ? `${h.label} · ${plural(ids.length, 'line')}`
+      : (h.none || `No lines contain ${joinOr(h.words)}`);
+    statusText.textContent = text;
+    statusEl.hidden = false;
+    scrollLog(ids.length ? document.getElementById(ids[0]) : (h.scrollTo && document.getElementById(h.scrollTo)));
+    return { ids, re, text };
+  }
+
+  const poemBox = $('#poem');
+  const expandBtn = $('#expand');
+  expandBtn.addEventListener('click', () => {
+    const open = poemBox.classList.toggle('collapsed') === false;
+    expandBtn.textContent = open ? 'Show fewer months' : `Show all ${TOTAL} months`;
+    expandBtn.setAttribute('aria-expanded', String(open));
+  });
+
+  // ---- everything that can own the highlight
+  function clearSources() {
+    document.querySelectorAll('.ev[aria-pressed="true"], #kinds .chip[aria-pressed="true"]').forEach(el => el.setAttribute('aria-pressed', 'false'));
+    document.querySelectorAll('.ev-inline').forEach(el => el.remove());
+    chart.classList.remove('filtering');
+    chart.querySelectorAll('.sq.on').forEach(el => el.classList.remove('on'));
+  }
+  $('#clear').addEventListener('click', () => { clearSources(); highlight(null); });
+
+  // ---- evidence links in the essay
+  const work = idsWhere(it => it.c === 'work');
+  const EV = {
+    nail:     { label: '“nail supplies”', ids: work },
+    chemo:    { label: '“chemotherapy supplies”', ids: idsWhere(it => it.t.startsWith('Chemo-Glam')) },
+    memorial: { label: '“memorial and death purchases”', ids: idsWhere(it => it.c === 'memorial') },
+    grammar:  { fig: 'fig-grammar' },
+    nouns:    { fig: 'fig-grammar' },
+    pronouns: { words: ['her', 'his', 'they'] },
+    prep:     { label: '“in”', words: ['in'] },
+    urn:      { label: '“Eternity Aluminum Urn”', ids: [idOf('Eternity Aluminum Urn')] },
+    after:    { words: ['after', 'died'] },
+    span:     { label: '“from nail supplies to a memorial plaque”', ids: [...work, idOf('Memorial Plaque')] },
+    routine:  { label: '“nail supplies, food, and clothing”', ids: idsWhere(it => it.m <= 3 && (it.c === 'work' || it.c === 'everyday')) },
+    decline:  { label: '“a walker and chemotherapy effects”', ids: [idOf('Walker'), ...idsWhere(it => it.t.startsWith('Chemo-Glam'))] },
+    turn:     { label: '“a birthday card … followed by an urn”', ids: [idOf('We Will Always Be Together'), idOf('Eternity Aluminum Urn')] },
+    lack:     { fig: 'fig-grammar' }
+  };
+
+  function showInline(a, res) {
+    const card = document.createElement('div');
+    card.className = 'ev-inline';
+    card.setAttribute('role', 'region');
+    card.setAttribute('aria-label', 'Lines from the poem');
+    const lines = res.ids.map(id => byId.get(id));
+    card.innerHTML =
+      `<div class="evi-head"><span>${esc(res.text)}</span><button type="button" class="evi-close">Close</button></div>` +
+      (lines.length ? `<ul>${lines.map(it =>
+        `<li><span class="evi-m">${esc(months[it.m - 1].label)}</span><span class="dot" style="--c:var(--c-${it.c})"></span><span>${markHTML(it.t, res.re)}</span></li>`
+      ).join('')}</ul>` : '');
+    card.querySelector('.evi-close').addEventListener('click', () => { clearSources(); highlight(null); a.focus(); });
+    a.closest('p').after(card);
+    if (!wide.matches) card.scrollIntoView({ behavior: behavior(), block: 'nearest' });
+  }
+
+  function activate(a) {
+    const ev = EV[a.dataset.ev];
+    if (ev.fig) {
+      const f = document.getElementById(ev.fig);
+      f.scrollIntoView({ behavior: behavior(), block: 'start' });
+      f.focus({ preventScroll: true });
+      return;
+    }
+    const wasOn = a.getAttribute('aria-pressed') === 'true';
+    clearSources();
+    if (wasOn) { highlight(null); return; }
+    a.setAttribute('aria-pressed', 'true');
+    const res = highlight(ev);
+    showInline(a, res);
+  }
+  document.querySelectorAll('.ev').forEach(a => {
+    if (!EV[a.dataset.ev].fig) a.setAttribute('aria-pressed', 'false');
+    a.addEventListener('click', e => { e.preventDefault(); activate(a); });
+    a.addEventListener('keydown', e => { if (e.key === ' ') { e.preventDefault(); activate(a); } });
+  });
+
+  // ---- Fig. 1: month-by-month chart
+  const chart = $('#chart');
+  const tip = $('#tip');
+  const detail = $('#detail');
+  const letter = l => l.charAt(0);
+  chart.innerHTML = months.map(m => {
+    const sorted = [...m.items].sort((a, b) => catOrder[a.c] - catOrder[b.c]);
+    return `<button type="button" class="col" data-m="${m.n}" aria-pressed="false" aria-label="${esc(m.label)}, month ${m.n} of ${TOTAL}, ${plural(m.items.length, 'item')}">` +
+      `<span class="stack">${sorted.map(it => `<span class="sq" data-id="${it.id}" data-c="${it.c}" style="--c:var(--c-${it.c});animation-delay:${120 + m.n * 28}ms"></span>`).join('')}</span>` +
+      `<span class="base"></span><span class="lbl" aria-hidden="true">${esc(letter(m.label))}</span></button>`;
+  }).join('');
+
+  $('#kinds').innerHTML = CATS.map(c =>
+    `<button type="button" class="chip" data-c="${c.id}" aria-pressed="false"><span class="sw" style="--c:var(--c-${c.id})"></span>${esc(c.label)}<span class="n">${allItems.filter(it => it.c === c.id).length}</span></button>`
+  ).join('');
+  $('#kinds').addEventListener('click', e => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    const wasOn = chip.getAttribute('aria-pressed') === 'true';
+    clearSources();
+    if (wasOn) { highlight(null); return; }
+    chip.setAttribute('aria-pressed', 'true');
+    chart.classList.add('filtering');
+    chart.querySelectorAll(`.sq[data-c="${chip.dataset.c}"]`).forEach(el => el.classList.add('on'));
+    highlight({ label: catLabel[chip.dataset.c], ids: idsWhere(it => it.c === chip.dataset.c) });
+  });
+
+  let selected = 1;
+  function renderDetail() {
+    const m = months[selected - 1];
+    detail.innerHTML =
+      `<div class="detail-head"><div class="d-title"><span class="d-month">${esc(m.label)}</span><span class="d-meta">${monthMeta(m)} · ${plural(m.items.length, 'item')}</span></div>` +
+      `<div class="steps"><button type="button" class="step" data-step="-1" ${selected === 1 ? 'disabled' : ''} aria-label="Previous month">← Prev</button>` +
+      `<button type="button" class="step" data-step="1" ${selected === TOTAL ? 'disabled' : ''} aria-label="Next month">Next →</button></div></div>` +
+      (m.items.length
+        ? `<ul class="d-list">${m.items.map(it => `<li><span class="dot" style="--c:var(--c-${it.c})"></span><span>${esc(it.t)}</span></li>`).join('')}</ul>`
+        : `<p class="d-empty">No items are listed under ${esc(m.label)}</p>`);
+    chart.querySelectorAll('.col').forEach(col => {
+      const on = Number(col.dataset.m) === selected;
+      col.classList.toggle('sel', on);
+      col.setAttribute('aria-pressed', String(on));
+    });
+  }
+  function selectMonth(n) {
+    selected = Math.min(TOTAL, Math.max(1, n));
+    renderDetail();
+    const m = months[selected - 1];
+    clearSources();
+    highlight({ label: `${m.label} · ${monthMeta(m).toLowerCase()}`, ids: m.items.map(it => it.id), none: `${m.label} · ${monthMeta(m).toLowerCase()} · no items`, scrollTo: `m${m.n}` });
+  }
+  chart.addEventListener('click', e => { const col = e.target.closest('.col'); if (col) selectMonth(Number(col.dataset.m)); });
+  detail.addEventListener('click', e => {
+    const b = e.target.closest('.step');
+    if (!b || b.disabled) return;
+    selectMonth(selected + Number(b.dataset.step));
+    const next = detail.querySelector(`.step[data-step="${b.dataset.step}"]`);
+    (next && !next.disabled ? next : detail.querySelector('.step:not(:disabled)'))?.focus();
+  });
+  renderDetail();
+
+  const wrapEl = chart.parentElement;
+  chart.addEventListener('pointerover', e => {
+    const sq = e.target.closest('.sq');
+    if (!sq || e.pointerType !== 'mouse') return;
+    const it = byId.get(sq.dataset.id);
+    tip.innerHTML = `${esc(it.t)}<small>${esc(months[it.m - 1].label)} · ${esc(catLabel[it.c])}</small>`;
+    tip.hidden = false;
+    const wr = wrapEl.getBoundingClientRect(), r = sq.getBoundingClientRect();
+    const w = tip.offsetWidth;
+    const x = Math.min(Math.max(r.left + r.width / 2 - wr.left, w / 2), wr.width - w / 2);
+    tip.style.left = `${x}px`;
+    tip.style.top = `${r.top - wr.top}px`;
+  });
+  chart.addEventListener('pointerout', e => { if (!e.relatedTarget || !e.relatedTarget.closest?.('.sq')) tip.hidden = true; });
+
+  // ---- Fig. 2: grammar and search
+  $('#t-pron').textContent = countWords(['her', 'his', 'they']);
+  $('#t-in').textContent = countWords(['in']);
+  const WORDS = ['her', 'his', 'they', 'after', 'died', 'grieves', 'mourned', 'in'];
+  const q = $('#q');
+  const wordsEl = $('#words');
+  const results = $('#results');
+  wordsEl.innerHTML = WORDS.map(w => `<button type="button" class="chip" data-w="${w}" aria-pressed="false">${w}<span class="n">${countWords([w])}</span></button>`).join('');
+
+  function runSearch(value, toPoem) {
+    const w = value.trim();
+    wordsEl.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.w === w.toLowerCase())));
+    if (!w) {
+      results.innerHTML = `<span class="r-head">Type a word to find it in the poem.</span>`;
+      if (toPoem) { clearSources(); highlight(null); }
+      return;
+    }
+    const re = wordRe([w]);
+    const hits = allItems.filter(it => [...it.t.matchAll(re)].length);
+    const count = countWords([w]);
+    results.innerHTML = count
+      ? `<span class="r-head">“${esc(w)}” appears ${count === 1 ? 'once' : `${count} times`} in the poem</span><ul>${hits.map(it =>
+          `<li><span class="rm">${esc(months[it.m - 1].label)}</span><span class="dot" style="--c:var(--c-${it.c})"></span><span>${markHTML(it.t, re)}</span></li>`
+        ).join('')}</ul>`
+      : `<span class="r-head">“${esc(w)}” does not appear anywhere in the poem</span>`;
+    if (toPoem) { clearSources(); highlight({ label: `“${w}”`, words: [w] }); }
+  }
+  q.addEventListener('input', () => runSearch(q.value, true));
+  wordsEl.addEventListener('click', e => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    q.value = chip.dataset.w;
+    runSearch(q.value, true);
+  });
+  q.value = 'in';
+  runSearch('in', false);
+
+  // ---- Fig. 3: one month apart
+  const slip = m => `<div class="slip-wrap"><div class="slip"><div class="slip-head"><b>${esc(m.label)}</b><span>${monthMeta(m)}</span></div>` +
+    `<ul>${m.items.map(it => `<li><span class="dot" style="--c:var(--c-${it.c})"></span><span>${esc(it.t)}</span></li>`).join('')}</ul></div><div class="tear" aria-hidden="true"></div></div>`;
+  $('#turn').innerHTML = slip(months[15]) + `<div class="arrow" aria-hidden="true"><b>→</b>next month</div>` + slip(months[16]);
+})();
+</script>
+</body>
+</html>
